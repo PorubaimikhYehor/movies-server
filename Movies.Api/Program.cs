@@ -1,3 +1,4 @@
+using Movies.Api.Mapping;
 using Movies.Application;
 using Movies.Application.Database;
 
@@ -44,6 +45,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
+app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
 
 
