@@ -2,6 +2,7 @@ using System;
 using FluentValidation;
 using Movies.Application.Models;
 using Movies.Application.Repositories;
+using Movies.Application.Services;
 
 namespace Movies.Application.Validators;
 
@@ -30,16 +31,9 @@ public class MovieValidator : AbstractValidator<Movie>
 
     }
 
-    private async Task<bool> ValidateSlug(Movie movie, string slug, CancellationToken token)
+    private async Task<bool> ValidateSlug(Movie movie, string slug, CancellationToken token = default)
     {
-        var existingMovie = await _movieRepository.GetBySlugAsync(slug, token);
-        if (existingMovie != null)
-        {
-            return existingMovie.Id == movie.Id;
-        }
-        else
-        {
-            return false;
-        }
+        var existingMovie = await _movieRepository.GetBySlugAsync(slug, null, token);
+        return existingMovie is null || existingMovie.Id == movie.Id;
     }
 }
