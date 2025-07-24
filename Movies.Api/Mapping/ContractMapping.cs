@@ -40,11 +40,15 @@ public static class ContractMapping
             Genres = movie.Genres.ToList()
         };
     }
-    public static MoviesResponse MapToResponse(this IEnumerable<Movie> movies)
+    public static MoviesResponse MapToResponse(this IEnumerable<Movie> movies,
+         int page, int pageSize, int totalCount)
     {
         return new MoviesResponse
         {
-            Items = movies.Select(MapToResponse)
+            Items = movies.Select(MapToResponse),
+            Page = page,
+            PageSize = pageSize,
+            Total = totalCount,
         };
     }
 
@@ -65,7 +69,13 @@ public static class ContractMapping
         {
             Title = request.Title,
             YearOfRelease = request.Year,
-            
+            SortField = request.SortBy?.Trim('+', '-').MapYear(),
+            SortOrder = request.SortBy == null ? SortOrder.Unsorted
+            : request.SortBy.StartsWith('-') ? SortOrder.Descending
+            : SortOrder.Ascending,
+            Page = request.Page,
+            PageSize = request.PageSize
+
         };
     }
 
@@ -73,6 +83,11 @@ public static class ContractMapping
     {
         options.UserId = userId;
         return options;
+    }
+
+    private static string MapYear(this string? value)
+    {
+        return string.Equals(value, "year", StringComparison.OrdinalIgnoreCase) ? "yearofrelease" : value ?? string.Empty;
     }
 
 }
