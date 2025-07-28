@@ -1,6 +1,3 @@
-using System;
-using System.Reflection.Metadata;
-using System.Security.Cryptography.X509Certificates;
 using Dapper;
 using Movies.Application.Database;
 using Movies.Application.Models;
