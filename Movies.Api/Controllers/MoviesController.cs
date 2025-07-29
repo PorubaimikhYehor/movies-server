@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using Movies.Contracts.Responses;
 
 namespace Movies.Api.Controllers
 {
+    [ApiVersion("1.0")]
     [ApiController]
     public class MoviesController : ControllerBase
     {
@@ -27,7 +29,7 @@ namespace Movies.Api.Controllers
 
             var movie = request.MapToMovie();
             await _movieService.CreateAsync(movie, token);
-            return CreatedAtAction(nameof(Get), new { idOrSlug = movie.Id }, movie.MapToResponse());
+            return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, movie.MapToResponse());
         }
 
 
@@ -42,12 +44,12 @@ namespace Movies.Api.Controllers
             var moviesResponse = movies.MapToResponse(request.Page, request.PageSize, movieCount);
             return Ok(moviesResponse);
         }
-
         [HttpGet(ApiEndpoints.Movies.Get)]
-        public async Task<IActionResult> Get([FromRoute] string idOrSlug,
+        public async Task<IActionResult> GetV1([FromRoute] string idOrSlug,
         [FromServices] LinkGenerator linkGenerator,
          CancellationToken token)
         {
+            Console.WriteLine($"GetV1 called with idOrSlug: {idOrSlug}");
             var userId = HttpContext.GetUserId();
 
             Movie? movie = Guid.TryParse(idOrSlug, out var id)
@@ -63,19 +65,19 @@ namespace Movies.Api.Controllers
             var movieObj = new { id = movie.Id };
             response.Links.Add(new Link
             {
-                Href = linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new { idOrSlug = movie.Id }),
+                Href = linkGenerator.GetPathByAction(HttpContext, nameof(GetV1), values: new { idOrSlug = movie.Id }),
                 Rel = "self",
                 Type = "GET"
             });
             response.Links.Add(new Link
             {
-                Href = linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new { idOrSlug = movie.Id }),
+                Href = linkGenerator.GetPathByAction(HttpContext, nameof(GetV1), values: new { idOrSlug = movie.Id }),
                 Rel = "self",
                 Type = "PUT"
             });
             response.Links.Add(new Link
             {
-                Href = linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new { idOrSlug = movie.Id }),
+                Href = linkGenerator.GetPathByAction(HttpContext, nameof(GetV1), values: new { idOrSlug = movie.Id }),
                 Rel = "self",
                 Type = "DELETE "
             });
@@ -83,6 +85,7 @@ namespace Movies.Api.Controllers
             return Ok(response);
 
         }
+
 
         [Authorize(AuthConstants.TrustedMemberPolicyName)]
         [HttpPut(ApiEndpoints.Movies.Update)]
