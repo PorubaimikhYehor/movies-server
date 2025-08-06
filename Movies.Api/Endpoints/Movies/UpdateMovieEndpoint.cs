@@ -33,8 +33,9 @@ public static class UpdateMovieEndpoint
             return TypedResults.Ok(response);
         })
         .WithName(Name)
-        // .Produces<MovieDto>(StatusCodes.Status200OK)
-        // .Produces(StatusCodes.Status404NotFound)
+        .Produces<MovieResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces<ValidationFailureResponse>(StatusCodes.Status400BadRequest)
         .RequireAuthorization(AuthConstants.TrustedMemberPolicyName)
         ;
 

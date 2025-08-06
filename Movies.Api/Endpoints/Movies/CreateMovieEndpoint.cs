@@ -3,6 +3,7 @@ using Movies.Api.Auth;
 using Movies.Api.Mapping;
 using Movies.Application;
 using Movies.Contracts.Requests;
+using Movies.Contracts.Responses;
 
 namespace Movies.Api.Endpoints.Movies;
 
@@ -24,8 +25,8 @@ public static class CreateMovieEndpoint
 
         })
         .WithName(Name)
-        // .Produces<MovieDto>(StatusCodes.Status200OK)
-        // .Produces(StatusCodes.Status404NotFound)
+        .Produces<MovieResponse>(StatusCodes.Status201Created)
+        .Produces<ValidationFailureResponse>(StatusCodes.Status404NotFound)
         .RequireAuthorization(AuthConstants.TrustedMemberPolicyName)
         ;
 

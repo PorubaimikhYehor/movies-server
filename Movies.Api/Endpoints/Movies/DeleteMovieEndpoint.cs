@@ -25,8 +25,8 @@ public static class DeleteMovieEndpoint
 
         })
         .WithName(Name)
-        // .Produces<MovieDto>(StatusCodes.Status200OK)
-        // .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization(AuthConstants.AdminUserPolicyName)
         ;
 
