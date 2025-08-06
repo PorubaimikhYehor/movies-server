@@ -12,7 +12,7 @@ public static class MovieEndpointExtentions
         app.MapCreateMovie();
         app.MapGetAllMovies();
         app.MapUpdateMovie();
-                app.MapDeleteMovie();
+        app.MapDeleteMovie();
         /*
          */
         return app;
